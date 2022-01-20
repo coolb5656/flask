@@ -10,7 +10,7 @@ basic hello world app, for testing flask
 
 ### CHSWired
 
-Checkout / Checkin system for CHS Wired **bold text** WIP
+Checkout / Checkin system for CHS Wired **WIP**
 
 ## Getting Started
 
