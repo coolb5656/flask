@@ -2,7 +2,7 @@
 
 Main folder for all my various flask projects
 
-## Project Descreiptions
+## Project Descriptions
 
 ### helloworld
 
