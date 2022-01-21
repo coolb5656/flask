@@ -1,6 +1,9 @@
+from cmath import log
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_assets import Environment, Bundle
+from flask_login import LoginManager
+
 
 db = SQLAlchemy()
 
@@ -25,6 +28,16 @@ def create_app():
 
     db.init_app(app)
 
+    login_manager = LoginManager()
+    login_manager.login_view = "auth.login"
+    login_manager.init_app(app)
+
+    from .models import student
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return student.query.get(int(user_id))
+
     @app.route("/")
     def index():
         return render_template("index.html")
@@ -33,17 +46,17 @@ def create_app():
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
-    # blueprint for checkout routes in our app
-    from .checkout import checkout as checkout_blueprint
-    app.register_blueprint(checkout_blueprint, url_prefix='/checkout')
+    # # blueprint for checkout routes in our app
+    # from .checkout import checkout as checkout_blueprint
+    # app.register_blueprint(checkout_blueprint, url_prefix='/checkout')
 
     # # blueprint for reserve routes in our app
     # from .reserve import reserve as reserve_blueprint
     # app.register_blueprint(reserve_blueprint)
 
 
-    # # blueprint for views routes in our app
-    # from .views import views as views_blueprint
-    # app.register_blueprint(views_blueprint)
+    # blueprint for main parts of app
+    from .main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
 
     return app
