@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from . import db
 from flask_login import login_required, current_user
-
+from .models import item, student, reservation, log
 
 main = Blueprint('main', __name__)
 
@@ -11,12 +11,12 @@ def profile():
     return render_template("views/profile.html", name=current_user.name)
 
 @main.route("/items") # view all items
-def items():
-    # TODO items view logic
-    pass
+def view_items():
+    items = item.query.all()
+    return render_template("views/items.html", items=items)
 
 @main.route("/item/<id>") # view item
-def item(id):
+def view_item(id):
     # TODO item view logic
     pass
 
