@@ -17,25 +17,30 @@ def view_items():
 
 @main.route("/item/<id>") # view item
 def view_item(id):
-    # TODO item view logic
-    pass
+    i = item.query.filter_by(id=id).first_or_404()
+    return render_template("views/item.html", item=i)
 
 @main.route("/students") # view all students
-def students():
-    # TODO students view logic
-    pass
+def view_students():
+    students = student.query.all()
+    return render_template("views/students.html", students=students)
 
 @main.route("/student/<id>") # view student
-def student(id):
-    # TODO student view logic
-    pass
+def view_student(id):
+    s = student.query.filter_by(id=id).first_or_404()
+    return render_template("views/student.html", student=s)
 
 @main.route("/reservations") # view all reservations
-def reservations():
-    # TODO reservations view logic
-    pass
+def view_reservations():
+    reservations = reservation.query.all()
+    return render_template("views/reservations.html", reservations=reservations)
 
 @main.route("/reservation/<id>") # view reservation
-def reservation(id):
-    # TODO reservation view logic
-    pass
+def view_reservation(id):
+    r = reservation.query.filter_by(id=id).first_or_404()
+    return render_template("views/reservation.html", reservation=r)
+
+@main.route("/log") # view all reservations
+def view_log():
+    logs = log.query.all()
+    return render_template("views/log.html", logs=logs)
