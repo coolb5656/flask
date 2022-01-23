@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <div class="notification is-danger">
-        {{ messages[0] }}
-    </div>
-{% endif %}
-{% endwith %}
-<form action="login" method="post">
-  <input type="text" name="email" id="email">
-  <input type="password" name="pwd" id="pwd">
-  <input type="submit" value="Submit">
-</form>
-
+<div class="d-flex justify-content-center">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      <div class="notification is-danger">
+          {{ messages[0] }}
+      </div>
+  {% endif %}
+  {% endwith %}
+  <form action="login" method="post">
+    <label for="email">Email</label><br>
+    <input type="text" name="email" id="email"><br><br>
+    <label for="pwd">Password</label><br>
+    <input type="password" name="pwd" id="pwd"><br>
+    <input type="submit" value="Submit">
+  </form>
+</div>
 
 {% endblock %}

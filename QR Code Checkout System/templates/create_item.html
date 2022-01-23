@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Add New Items{% endblock %}</h1>
+
+<form action="/create/item" method="post" enctype="multipart/form-data">
+    <br>
+    <br>
+    <input type="file" accept=".csv" name="file"/>
+    <br>
+    <input type="password" name="pin"/>
+    <br>
+    <br>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% endblock %}

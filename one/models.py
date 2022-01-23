@@ -28,6 +28,7 @@ class student(UserMixin, db.Model):
 
 class item(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
+    code = db.Column(db.Integer) 
     name = db.Column(db.String(1000))
     type = db.Column(db.String(1000))
     status_date = db.Column(db.DateTime())

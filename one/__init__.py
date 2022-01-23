@@ -14,6 +14,7 @@ def create_app():
     bundles = {
         'js': Bundle(
             'js/lib/jquery-3.6.0.min.js',
+            'js/scan.js',
             output='gen/app.js'),
         'css': Bundle(
             'css/style.css',
@@ -47,9 +48,9 @@ def create_app():
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
-    # # blueprint for checkout routes in our app
-    # from .checkout import checkout as checkout_blueprint
-    # app.register_blueprint(checkout_blueprint, url_prefix='/checkout')
+    # blueprint for reserve routes in our app
+    from .checkout import checkout as checkout_blueprint
+    app.register_blueprint(checkout_blueprint, url_prefix='/checkout')
 
     # # blueprint for reserve routes in our app
     # from .reserve import reserve as reserve_blueprint
