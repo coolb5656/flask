@@ -54,3 +54,13 @@ def scan():
             return jsonify(id=0, status="Non Existent", name="ERROR")
 
     return jsonify(id=i.id, status=i.status, name=i.name)
+
+@checkout.route("scan_name", methods=["GET"]) # backend for returning item names
+def scan_name():
+    name = request.args.get("name", type=str)
+    if name:
+        i = item.query.filter_by(name=name).first()
+        if i is None:
+            return jsonify(id=0, status="Non Existent", name="ERROR")
+
+    return jsonify(id=i.id, status=i.status, name=i.name)

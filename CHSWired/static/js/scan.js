@@ -43,4 +43,31 @@ $(document).ready(function(){
           return false;
       }
   });
+
+  $("#date").change(function changeDate() {
+    $.getJSON($SCRIPT_ROOT + '/reservation/check_new_reservation', {
+      date: $('#date').val()
+    }, function(data) {
+          reserved_items = data
+
+          
+    });
+    return false;
+  });
+
+  $("#select_items").change(function addItem() {
+    $.getJSON($SCRIPT_ROOT + '/checkout/scan_name', {
+        name: $('#select_items').val()
+      }, function(data) {
+            if(!(items.includes(data.id)) && !(reserved_items.includes(data.id))){
+              items.push(data.id)
+              $("#items").append(data.name +"<br>");
+              $('#ids').val(items);
+            }
+            else {
+                alert("Item is reserved or not existent!")
+            }
+      });
+      return false;
+  });
 })
