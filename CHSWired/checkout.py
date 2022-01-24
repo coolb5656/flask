@@ -32,7 +32,7 @@ def checkin_item():
     if request.method == "POST":
         ids = request.form.get("ids")
         ids = ids.split(",")
-        
+
         for id in ids:
             i = item.query.filter_by(id=id).first()                
             i.status="In"
@@ -45,7 +45,7 @@ def checkin_item():
     names = student.query.all()
     return render_template("checkout/checkin.html", names=names)
 
-@checkout.route("scan", methods=["GET"]) # backend for returnig item names
+@checkout.route("scan", methods=["GET"]) # backend for returning item names
 def scan():
     code = request.args.get("code", type=str)
     if code:

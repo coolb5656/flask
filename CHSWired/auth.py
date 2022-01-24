@@ -1,54 +1,69 @@
-import functools
-
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
-)
-from werkzeug.security import check_password_hash, generate_password_hash
-
-from .models import student, db
-
-bp = Blueprint('auth', __name__, url_prefix='/auth')
-
-@bp.route("/register", methods=("GET", "POST"))
-def register():
-    if request.method == "POST":
-        username = request.form["username"]
-        email = request.form["email"]
-        password = request.form["password"]
-        
-        if student.query.filter_by(email=email).first() is None:
-            new_student = student()
+from flask import Blueprint, render_template, redirect, url_for, request, flash
+from werkzeug.security import generate_password_hash, check_password_hash
+from .models import student
+from . import db
+from flask_login import login_user, login_required, logout_user
 
 
-    return render_template('auth/register.html')
+def new_student(name, email, password):
+    existing_student = student.query.filter_by(email=email).first()
 
-@bp.route('/login', methods=('GET', 'POST'))
+    if existing_student:
+        flash('Email address already exists')
+        return 0
+
+    new = student(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+    db.session.add(new)
+    db.session.commit()
+    return 1
+
+auth = Blueprint('auth', __name__)
+
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
+    error = None
+    if request.method == 'POST':
+        email = request.form.get("email")
+        password = request.form.get("pwd")
 
-    return render_template('auth/login.html')
+        s = student.query.filter_by(email=email).first()
 
-@bp.route('/logout')
+        if not s or not check_password_hash(s.pwd, password):
+            flash("Wrong Email or Password!")
+            return redirect(url_for("auth.login"))
+        
+        login_user(s)
+        return redirect(url_for('main.profile'))
+
+    return render_template('auth/login.html', error=error)
+
+@auth.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        # code to validate and add user to database goes here
+        email = request.form.get('email')
+        name = request.form.get('name')
+        password = request.form.get('pwd')
+
+        user = student.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
+
+        if user: # if a user is found, we want to redirect back to signup page so user can try again
+            flash('Email address already exists!')
+            return redirect(url_for('auth.signup'))
+
+        # create a new user with the form data. Hash the password so the plaintext version isn't saved.
+        new_user = student(email=email, name=name, pos="Producer",pwd=generate_password_hash(password, method='sha256'))
+
+        # add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/signup.html')
+
+
+@auth.route('/logout')
+@login_required
 def logout():
-    session.clear()
-    return redirect(url_for('index'))
-
-@bp.before_app_request
-def load_logged_in_user():
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone()
-
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-
-        return view(**kwargs)
-
-    return wrapped_view
+    logout_user()
+    return redirect(url_for("index"))
