@@ -47,6 +47,10 @@ def create_app():
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
+    # # blueprint for auth routes in our app
+    # from .admin import admin as admin_blueprint
+    # app.register_blueprint(admin_blueprint, url_prefix='/admin')
+
     # blueprint for reserve routes in our app
     from .checkout import checkout as checkout_blueprint
     app.register_blueprint(checkout_blueprint, url_prefix='/checkout')
