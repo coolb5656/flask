@@ -52,6 +52,8 @@ $(document).ready(function(){
       date: $('#date').val()
     }, function(data) {
           reserved_items = data
+
+          
     });
     return false;
   });
@@ -66,7 +68,7 @@ $(document).ready(function(){
               $('#ids').val(items);
             }
             else {
-                alert("Item is checked out or not existent!")
+                alert("Item is reserved or not existent!")
             }
       });
       return false;

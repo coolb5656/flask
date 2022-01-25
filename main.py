@@ -8,7 +8,9 @@ main = Blueprint('main', __name__)
 @main.route("/profile")
 @login_required
 def profile():
-    return render_template("views/profile.html", name=current_user.name)
+    if(current_user.pos == "Producer"):
+        return render_template("admin/profile.html", name=current_user.name)
+    return redirect(url_for('main.view_student', id=current_user.id))
 
 @main.route("/items") # view all items
 def view_items():

@@ -25,6 +25,7 @@ class student(UserMixin, db.Model):
     items = db.relationship("item", backref="student")
     reservations = db.relationship("reservation", backref="student")
     logs = db.relationship("log", backref="student")
+    
 
 class item(db.Model):
     id = db.Column(db.Integer, primary_key=True) 

@@ -14,7 +14,23 @@ reserve = Blueprint('reserve', __name__)
 @reserve.route("add", methods=["GET", "POST"]) # reserve items
 def add_reservation():
     if request.method == "POST":
-        pass
+        name = request.form.get("name", type=str)
+        date = request.form.get("date", type=str)
+        date = datetime.fromisoformat(date)
+
+        ids = request.form.get("ids")
+        ids = ids.split(",")
+
+        s = student.query.filter_by(name=name).first()
+
+        for id in ids:
+            new_reservation = reservation(student_id=s.id, item_id=id, date_out=date)
+            db.session.add(new_reservation)
+            db.session.commit()
+
+        check_reservation()
+
+        return redirect(url_for("index"))
 
     students = student.query.all()
     items = item.query.all()
@@ -30,13 +46,14 @@ def check_reservation():
         reservations = reservation.query.all()
 
         for r in reservations:
-            if r.date_out < datetime.now():
+            if r.date_out.date() == datetime.now().date:
                 i = item.query.filter_by(id=r.item_id).first()
                 i.status="Reserved"
                 i.student_id = r.student_id
                 i.status_date = datetime.now()
                 reservation.query.filter_by(id=r.id).delete()
                 db.session.commit()
+                print("Updating Reservation")
 
 @reserve.route("check_new_reservation", methods=["GET"]) # backend reservation
 def check_new_reservation():
@@ -49,7 +66,6 @@ def check_new_reservation():
 
         for r in reservations:
             day = r.date_out
-            print(type(day))
             if day.day == date.day:
                 i = item.query.filter_by(id=r.item_id).first()
                 items.append(i.id)
